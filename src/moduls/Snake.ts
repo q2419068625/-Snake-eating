@@ -31,8 +31,18 @@ class Snake{
               //进入判断说明蛇撞墙了
               throw new Error('蛇撞墙了')
           }
+          //修改y时，是在修改垂直坐标，蛇在上下移动，蛇在向上移动时不能向下掉头，反之亦然
+        if(this.bodies[1] && (this.bodies[1] as HTMLElement).offsetLeft === value){
+            if(value > this.X){
+                value = this.X - 10;
+            }else{
+                value = this.X + 10;
+            }
+        }
+
           this.moveBody()
-          this.head.style.left = value +'px'
+          this.head.style.left = value +'px';
+          this.chechHeadBody()
       }
 
       set Y(value){
@@ -45,8 +55,19 @@ class Snake{
             //进入判断说明蛇撞墙了 抛出一个异常
             throw new Error('蛇撞墙了')
         }
+        //修改y时，是在修改垂直坐标，蛇在上下移动，蛇在向上移动时不能向下掉头，反之亦然
+        if(this.bodies[1] && (this.bodies[1] as HTMLElement).offsetTop === value){
+            if(value > this.Y){
+                value = this.Y - 10;
+            }else{
+                value = this.Y + 10;
+            }
+        }
+
+
         this.moveBody()
-        this.head.style.top = value + 'px'
+        this.head.style.top = value + 'px';
+        this.chechHeadBody()
       }
 
       //蛇增加身体的方法
@@ -66,6 +87,17 @@ class Snake{
             //将值设置到当前身体上
             (this.bodies[i] as HTMLElement).style.left = X + 'px';
             (this.bodies[i] as HTMLElement).style.top = Y + 'px';
+        }
+    }
+    //用来检测蛇头撞到身体的方法
+    chechHeadBody(){
+        //获取所有的身体，检测是否和蛇头的位置坐标发生重叠
+        for(let i = 1; i<this.bodies.length;i++){
+            let bd = this.bodies[i] as HTMLElement;
+            if(this.X === bd.offsetLeft && this.Y === bd.offsetTop){
+                //进入判断说明蛇头撞到了身体，游戏结束
+                throw new Error('撞到自己了')
+            }
         }
     }
 
